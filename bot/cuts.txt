@@ -1,0 +1,87 @@
+@bot.message_handler(content_types=['text', 'url'])
+def book(message):
+    markup = ttp.ReplyKeyboardMarkup(row_width=2)
+    backbutton = ttp.KeyboardButton(text='Вернуться назад')
+    button1 = ttp.KeyboardButton(text='Поиск произведения')
+    button2 = ttp.KeyboardButton(text='Добавить произведение')
+    markup.add(backbutton, button1, button2)
+    if message.text == 'Добавить произведение':
+    mess1 = "Для того, чтобы добавить новое произведение вы должны знать формат заполнения. Он содержит: \n 1) Автор (пример: А.С.Пушкин) \n 2) Жанр произведения (роман\проза\стихотоворение\...) \n 3) Название (примеры: Капитанская доска\Дубровский\...) \n 4) Главные герои (пример: Пётр Гринёв, Мария, ... ) \n 5) Проблемы произведения (нравственный выбор," \
+            "подвиг во имя любви, ...) \n 5) Ссылка на краткий пересказ (желательно, чтобы это были источники briefly.ru\litrekon.ru\obrazovaka.ru)"
+        sent = bot.send_message(message.chat.id, mess1, reply_markup=markup, parse_mode='html')
+        if message.text == 'Добавить произведение':
+            bot.register_next_step_handler(sent, add_author)
+        elif message.text == 'Вернуться назад':
+            bot.register_next_step_handler(sent, start)
+    elif message.text == 'Поиск произведения':
+        pass
+
+
+new_book = []
+# rows = 41
+
+
+def add_author(message):
+    sent = bot.send_message(message.chat.id, 'Введите автора произведения:')
+    new_book.append(message.text)
+    print(*new_book)
+    new_book.pop(0)
+    bot.register_next_step_handler(sent, add_genre)
+
+
+def add_genre(message):
+    sent = bot.send_message(message.chat.id, 'Введите жанр произведения:')
+    new_book.append(message.text)
+    print(*new_book)
+    bot.register_next_step_handler(sent, add_name)
+
+
+def add_name(message):
+    sent = bot.send_message(message.chat.id, 'Введите название произведения:')
+    new_book.append(message.text)
+    print(*new_book)
+    bot.register_next_step_handler(sent, add_heroes)
+
+
+def add_heroes(message):
+    sent = bot.send_message(message.chat.id, 'Введите главных героев произведения через запятую:')
+    new_book.append(message.text)
+    print(*new_book)
+    bot.register_next_step_handler(sent, add_problems)
+
+
+def add_problems(message):
+    sent = bot.send_message(message.chat.id, 'Введите проблемы раскрытые в произведении через запятую:')
+    new_book.append(message.text)
+    print(*new_book)
+    bot.register_next_step_handler(sent, add_url)
+
+
+def add_url(message):
+    bot.send_message(message.chat.id, 'Введите ссылку на краткий пересказ (желательно, чтобы это были сайты litrekon.ru, briefly.ru, obrazovaka.ru):')
+    new_book.append(message.text)
+    print(new_book)
+    # if len(new_book) == 6:
+    #     worksheet.append_row(new_book)
+    sent = bot.send_message(message.chat.id, 'Книга будет добавлена после проверки модератором! Спасибо за вклад в проект!')
+    bot.register_next_step_handler(sent, added)
+    # bot.register_next_step_handler(sent, add_new)
+
+
+def added(message):
+    sent = bot.send_message(615893726, f"СООБЩЕНИЕ МОДЕРАТОРУ. \n Была добавлена книга с характеристиками {new_book}")
+    print(new_book)
+    worksheet.append_row(new_book)
+    bot.register_next_step_handler(sent, start)
+# def add_new(message):
+# bot.send_message(615893726, f"СООБЩЕНИЕ МОДЕРАТОРУ. \n Была добавлена книга с характеристиками {new_book}")
+#     markup=ttp.ReplyKeyboardMarkup(row_width=2)
+#     backbutton=ttp.KeyboardButton(text='Вернуться назад')
+#     markup.add(backbutton)
+#     print(new_book)
+#     worksheet.append_row(new_book)
+#     sent = bot.send_message(message.caht.id, 'Книга будет добавлена после проверки модератором! Спасибо за вклад в проект!', reply_markup=markup)
+#     # bot.send_message(615893726, f"Была добавлена книга с характеристиками {new_book}")
+#     bot.register_next_step_handler(sent, start)
+
+""
