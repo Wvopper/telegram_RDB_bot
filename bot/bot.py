@@ -42,8 +42,8 @@ def add_new_book(message):
     back = ttp.KeyboardButton(text='/back')
     markup.add(button1, button2, back)
 
-    mess1 = "Для того, чтобы добавить новое произведение вы должны знать формат заполнения. Он содержит: \n 1) Автор (пример: А.С.Пушкин) \n 2) Жанр произведения (роман\проза\стихотоворение\...) \n 3) Название (примеры: Капитанская доска\Дубровский\...) \n 4) Главные герои (пример: Пётр Гринёв, Мария, ... ) \n 5) Проблемы произведения (нравственный выбор," \
-            "подвиг во имя любви, ...) \n Если вы хотите вернуться в меню, напишите /start"
+    mess1 = "Для того, чтобы добавить новое произведение вы должны знать формат заполнения. Он содержит: \n 1) Автор (пример: А.С.Пушкин) \n 2) Жанр произведения (роман\проза\стихотоворение\...) \n 3) Название (примеры: Капитанская дочка\Дубровский\...) \n 4) Главные герои (пример: Пётр Гринёв, Мария, ... ) \n 5) Проблемы произведения (нравственный выбор," \
+            "подвиг во имя любви, ...) \n 6) Ссылка на краткий пересказ (желательно, чтобы это были ресурсы briefly.ru / litrekon.ru / obrazovaka.ru) \n Если вы хотите вернуться в меню, напишите /start"
     bot.send_message(message.chat.id, mess1, reply_markup=markup)
     sent = bot.send_message(message.chat.id, 'Введите параметры произведения (<b>каждый на новой стороке!</b>), как указано выше', parse_mode='html', reply_markup=markup)
     bot.register_next_step_handler(sent, adding)
@@ -80,13 +80,13 @@ def searcher(message):
 def search_by(message):
     if message.text != '/start' and message.text != '/back':
         if message.text == 'Поиск по автору':
-            sent = bot.send_message(message.chat.id, 'Введите искомого автора')
+            sent = bot.send_message(message.chat.id, 'Введите искомого автора \n Пример поиска: Л.Н.Толстой <b>без пробелов, соблюдая точки!</b>. Исклюяения: Джордж Оруэлл, Джон Гойн, О.Генри)', parse_mode='html')
             bot.register_next_step_handler(sent, search_by_author)
 
 
 def search_by_author(message):
     if message.text != '/start' and message.text != '/back':
-        value = message.text
+        value = str(message.text)
         for k, v in aut_and_id.items():
             if v == value:
                 print(f"{k} -> {v}")
