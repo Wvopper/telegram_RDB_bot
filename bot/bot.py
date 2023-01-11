@@ -1,6 +1,8 @@
 import gspread as gs
+
 import telebot
 from telebot import types as ttp
+
 from prettytable import PrettyTable
 
 
@@ -50,7 +52,7 @@ def adding(message):
     if message.text != '/start' and message.text != '/back':
         parametrs = message.text
         last_row = int(worksheet.col_values(1)[-1])
-        print(parametrs)
+        # print(parametrs)
         new =[str(last_row + 1)] + parametrs.split("\n")
         print(new)
         worksheet.append_row(new)
