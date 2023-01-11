@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 
 
 # connecting to GoogleSheets
-gs = gs.service_account(filename='credentials.json')
+gs = gs.service_account(filename='../bot/credentials.json')
 sh = gs.open_by_key('1Q9bY3Vlc-He5eyyaZYllSE1h7XjRbduN2wR1zm4v31k')
 worksheet = sh.sheet1
 new_book = []
@@ -19,7 +19,7 @@ bot = telebot.TeleBot('5862500583:AAFLMRZNlGi6aZ28c1LqmV9xpMG5mSmLQ9Q')
 @bot.message_handler(commands=['start'])
 def start(message):
     mess = f"Привет, <b>{message.from_user.first_name}</b>. \n Этот бот предназначен для подготовки к сочинениям по русскому языку и литературе. \n С его помощью вы можете найти краткие пересказы на интересующие вас произведения, вспомнить главных героев, а также посмотреть, какие проблемы расскрываются. \n  Также вы можете добавить прочитанное вами произведение" \
-           f" \n Кнопка <b>/search</b> переведёт вас на поиск нужного вам произведения. \n Кнопка <b>/add_new_book</b> позволит вам добавить новое произведение. \n Кнопка <b>/back</b> позволит вам вернуться в главное меню"
+           f" \n Кнопка <b>/search</b> переведёт вас на поиск нужного вам произведения. \n Кнопка <b>/add_new_book</b> позволит вам добавить новое произведение. \n Кнопка <b>/back</b> позволит вам вернуться в главное меню \n Если бот долго не отвечает напишите в поддержку: @rosehipbloom "
     markup = ttp.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     button1 = ttp.KeyboardButton(text='/search')
     button2 = ttp.KeyboardButton(text='/add_new_book')
@@ -39,7 +39,7 @@ def add_new_book(message):
     markup.add(button1, button2, back)
 
     mess1 = "Для того, чтобы добавить новое произведение вы должны знать формат заполнения. Он содержит: \n 1) Автор (пример: А.С.Пушкин) \n 2) Жанр произведения (роман\проза\стихотоворение\...) \n 3) Название (примеры: Капитанская дочка\Дубровский\...) \n 4) Главные герои (пример: Пётр Гринёв, Мария, ... ) \n 5) Проблемы произведения (нравственный выбор," \
-            "подвиг во имя любви, ...) \n 6) Ссылка на краткий пересказ (желательно, чтобы это были ресурсы briefly.ru / litrekon.ru / obrazovaka.ru) \n Если вы хотите вернуться в меню, напишите /back \n Если бот долго не отвечает напишите в поддержку: @rosehipbloom "
+            "подвиг во имя любви, ...) \n 6) Ссылка на краткий пересказ (желательно, чтобы это были ресурсы briefly.ru / litrekon.ru / obrazovaka.ru) \n Если вы хотите вернуться в меню, напишите /back"
     bot.send_message(message.chat.id, mess1, reply_markup=markup)
     sent = bot.send_message(message.chat.id, 'Введите параметры произведения (<b>каждый на новой стороке!</b>), как указано выше', parse_mode='html', reply_markup=markup)
     bot.register_next_step_handler(sent, adding)
@@ -50,7 +50,8 @@ def adding(message):
     if message.text != '/start' and message.text != '/back':
         parametrs = message.text
         last_row = int(worksheet.col_values(1)[-1])
-        new =[str(last_row + 1)] + parametrs.strip().split()
+        print(parametrs)
+        new =[str(last_row + 1)] + parametrs.split("\n")
         print(new)
         worksheet.append_row(new)
         bot.send_message(615893726, f"СООБЩЕНИЕ МОДЕРАТОРУ. \n Была добавлена книга с характеристиками {new}")  # bot sends message to admin that book has been added
@@ -137,4 +138,5 @@ def search_by_name(message):
 
 
 # bot polling
-bot.polling(none_stop=True)
+bot.infinity_polling()
+# bot.polling(none_stop=True)
