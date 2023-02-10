@@ -140,5 +140,5 @@ def search_by_name(message):
 
 
 # bot polling
-bot.infinity_polling()
-# bot.polling(none_stop=True)
+# bot.infinity_polling()
+bot.polling(none_stop=True)
